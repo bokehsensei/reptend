@@ -1,7 +1,4 @@
-#!/usr/bin/env python3.3
-
-from collections import deque, Counter
-from pprint import PrettyPrinter
+#!/usr/bin/env python
 
 def decimals(numerator, denominator):
 		""" returns the sequence of repeating digits of 1/n """
@@ -12,7 +9,7 @@ def decimals(numerator, denominator):
 
 		remainders = set()
 		quotient_first = dict()
-		quotients = deque()
+		quotients = []
 		r = numerator
 
 		while True:
@@ -59,13 +56,8 @@ def hash( reptend ):
 		m[i] += 1
 	return tuple(m.values())
 	
-sums = []
-pp = PrettyPrinter()
-
 all = []
 for n in range(258):
 	(infinite, T) = decimals(1,n)
 	if len(T[1]) == n-1:
 		all.append((n, to_int(del_leading_zeros(T[1]))))
-	
-pp.pprint(all)
