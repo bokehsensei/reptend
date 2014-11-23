@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-def decimals(numerator, denominator):
-		""" returns the sequence of repeating digits of 1/n """
+def reptend(numerator, denominator):
+		""" returns the sequence of repeating digits of numerator/denominator """
 		if n <= 0:
 			return (False, ([],[]) )
 		if n == 1:
@@ -58,6 +58,6 @@ def hash( reptend ):
 	
 all = []
 for n in range(258):
-	(infinite, T) = decimals(1,n)
+	(infinite, T) = reptend(1,n)
 	if len(T[1]) == n-1:
 		all.append((n, to_int(del_leading_zeros(T[1]))))
