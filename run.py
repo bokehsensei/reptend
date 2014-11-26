@@ -96,6 +96,11 @@ def inverse_reptend(K, R):
 
 	'''
 
+	if not K:
+		K = [0]
+	if not R:
+		R = [0]
+
 	n = len(K) - 1
 	m = len(R) - 1
 	U = 0
