@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from fractions import Fraction
+from collections import deque
+from itertools import repeat
 
 def reptend(numerator, denominator):
 	'''
@@ -28,11 +30,8 @@ def reptend(numerator, denominator):
 		r = 0.01*( 4*1 + 2*0.1 + 8*0.01 + 5*0.001 + 7*0.0001 + 1*0.00001) = 0.042871
 
 	'''
-
-	if n <= 0:
-		return ([],[])
-	if n == 1:
-		return ([1],[])
+	if denominator == 1:
+		return ([numerator],[])
 
 	remainders = set()
 	quotient_first = dict()
@@ -48,9 +47,9 @@ def reptend(numerator, denominator):
 		else:
 			q_list = list(quotients)
 			first = quotient_first[r]
-			return (q_list[0:first], q_list[first:]) # infinite ~ program never terminates
+			return (q_list[0:first], q_list[first:]) # infinite ~ division never terminates
 		if r == 0:
-			return (quotients, []) # finite ~ program terminates
+			return (quotients, []) # finite ~ division terminates
 		if r < denominator:
 			r *= 10
 
@@ -120,16 +119,6 @@ def inverse_reptend(K, R):
 
 	return f.numerator, f.denominator
 		
-
-def del_leading_zeros(reptend):
-	''' turn [0, 0, 0, 4, 5, 9] -> [4,5,9] '''
-	if not reptend:
-		return []
-	first_non_zero = 0
-	while reptend[first_non_zero] == 0:
-		first_non_zero += 1
-	return reptend[first_non_zero:]
-
 def to_int(reptend):
 	''' convert a reptend sequence into a big int
 	example: [1,2,3] => 123
@@ -140,6 +129,16 @@ def to_int(reptend):
 		i += n
 	return i
 
+def to_list(reptend):
+	'''
+		convert an integer reptend to a list of digits
+	'''
+	rest = reptend
+	digits = deque()
+	while rest:
+		rest, digit = divmod(rest,10)
+		digits.appendleft(digit)
+	return tuple(digits)
 
 def hash( reptend ):
 	''' the characteristic number of this reptend, i.e. a number based on the histogram of digits
@@ -149,12 +148,32 @@ def hash( reptend ):
 	for i in reptend:
 		m[i] += 1
 	return tuple(m.values())
+
+
+def randomness(reptend):
+	''' counts the number of times a given digit shows up in a reptend.
+	This is to verify that long reptends have digits equally distributed
+	'''
+
+	count = dict(zip(range(10), repeat(0,10)))
+	for digit in reptend:
+		count[digit] += 1
+	for n,c in count.items():
+		count[n] = c*100//len(reptend)
+	return count
 	
-all = []
-for n in range(258):
-	T = reptend(1,n)
-	if len(T[1]) == n-1:
-		all.append((n, to_int(del_leading_zeros(T[1]))))
+def first_full_reptend(N):
+	'''
+		returns the first full reptend primes in the range [2..N]
+		Example:
+			first_full_reptend(10) => [(7, 142857)]
+	'''
+	all = []
+	for n in range(2,N+1):
+		_,r = reptend(1,n)
+		if len(r) == n-1:
+			all.append((n, to_int(r)))
+	return all
 
 # some findings:
 #
